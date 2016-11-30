@@ -2,36 +2,26 @@
 # -*- coding: utf-8 -*-
 
 """
+List Object
+By Nicholas Robinson
+"""
+
+class ListObject(object):
+
+	def __init__(self,id):
+		self.id = id
+
+"""
 User
 By Nicholas Robinson
 """
 
-class User(object):
+class User(ListObject):
 
 	def __init__(self,id):
-		self.id = id
+		ListObject.__init__(self,id)
 		self.docsRead = []
 		self.docTotalTime = 0
-
-	"""
-	def __lt__(self, other):
-		return self.docTotalTime < other.docTotalTime
-
-	def __le__(self, other):
-		return self.docTotalTime <= other.docTotalTime
-
-	def __eq__(self, other):
-		return self.docTotalTime == other.docTotalTime
-
-	def __ne__(self, other):
-		return self.docTotalTime != other.docTotalTime
-
-	def __gt__(self, other):
-		return self.docTotalTime > other.docTotalTime
-
-	def __ge__(self, other):
-		return self.docTotalTime >= other.docTotalTime
-	"""
 
 	def readDoc(self, doc, time=0):
 		if not (doc in self.docsRead):
@@ -50,10 +40,10 @@ Document
 By Nicholas Robinson
 """
 
-class Document():
+class Document(ListObject):
 
 	def __init__(self,id):
-		self.id = id
+		ListObject.__init__(self,id)
 		self.usersRead = []
 		self.countriesRead = []
 

@@ -8,6 +8,7 @@ By Nicholas Robinson
 
 import json
 import sys
+from user_agents import parse
 
 from DataTypes import Document as Doc
 from DataTypes import User
@@ -19,13 +20,14 @@ class Sorter(object):
 		self.filename = filename
 		self.dl = List()
 		self.ul = List()
+		self.al = []
 
 	def loadFile(self):
 		file_ = open(self.filename, 'r')
 		for line in file_:
 			#print(line)
 			self._sortJson(line)
-		return (self.dl,self.ul)
+		return (self.dl,self.ul, self.al)
 
 	def _sortJson(self,_json):
 		data = json.loads(_json)
@@ -33,20 +35,26 @@ class Sorter(object):
 			if (data['event_type'] != "pageread") and (data['event_type'] != "pagereadtime"):
 				return
 
+			""" Store Document Information """
 			if not (self.ul.contains(data['subject_doc_id'])):
 				self._docAdd(data)
 			doc = self.dl.get(data['subject_doc_id'])
 
+			""" Store User Information """
 			if not (self.ul.contains(data['visitor_uuid'])):
 				self._userAdd(data)
 			user = self.ul.get(data['visitor_uuid'])
 
+			""" Store Document Viewing Information """
 			if 'event_readtime' in data:
 				user.readDoc(doc, data['event_readtime'])
 			else:
 				user.readDoc(doc)
 			doc.userRead(user)
 			doc.countryRead(data['visitor_country'])
+
+			""" Store User Agent Information """
+			self.al.append(parse(data['visitor_useragent']))
 		except KeyError:
 			print(_json)
 			print("Bad JSON")

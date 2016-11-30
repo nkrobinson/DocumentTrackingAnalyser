@@ -21,9 +21,10 @@ class DocTracker():
 		listSet = self.s.loadFile()
 		self.dl = listSet[0]
 		self.ul = listSet[1]
+		self.al = listSet[2]
 
 	def loadAnalyser(self):
-		self.da = DocAnalyser(self.dl, self.ul)
+		self.da = DocAnalyser(self.dl, self.ul, self.al)
 
 	def argumentHandler(self):
 		"""
@@ -34,7 +35,7 @@ class DocTracker():
 
 
 def __main__():
-	dc = DocTracker()
+	dc = DocTracker("data/sample_100k_lines.json")
 	dc.loadAnalyser()
 	da = dc.da
 
@@ -43,6 +44,15 @@ def __main__():
 
 	print("DOCUMENT ANALYSER CONTINENTS")
 	print(da.docContinents("140206010823-b14c9d966be950314215c17923a04af7"))
+
+	print("USER AGENTS")
+	print(da.userAgents())
+
+	print("USER AGENTS STRING")
+	print(da.userAgentsString())
+
+	print("USER AGENTS STRING SHORT")
+	print(da.userAgentsStringShort())
 
 	print("TOP TEN READERS")
 	print(da.topTenReaders())

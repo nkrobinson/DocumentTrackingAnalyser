@@ -6,17 +6,20 @@ Document Analyser
 By Nicholas Robinson
 """
 
+from user_agents import parse
+from collections import Counter
+import re
+
 from DataTypes import Document as Doc
 from DataTypes import User as User
 from List import ListContainer as List
 
-from collections import Counter
-
 class DocAnalyser():
 
-	def __init__(self, dl, ul):
+	def __init__(self, dl, ul, al):
 		self.dl = dl
 		self.ul = ul
+		self.al = al
 
 	"""
 	Task 2a
@@ -40,6 +43,31 @@ class DocAnalyser():
 			return Counter(continentlist).most_common()
 		else:
 			return []
+
+	"""
+	Task 3
+	"""
+	def userAgents(self):
+		tempal = (agent for agent in self.al)
+		return Counter(tempal).most_common()
+
+	"""
+	Task 3a
+	"""
+	def userAgentsString(self):
+		tempal = (str(agent) for agent in self.al)
+		return Counter(tempal).most_common()
+
+	"""
+	Task 3b
+	"""
+	def userAgentsStringShort(self):
+		tempal = (self.getMainBrowser(str(agent)) for agent in self.al)
+		return Counter(tempal).most_common()
+
+	def getMainBrowser(self, string):
+		temp = re.split('\/', string)
+		return temp[len(temp)-1]
 
 	"""
 	Task 4
