@@ -20,6 +20,22 @@ class Sorter():
 		self.ul = ul
 
 	"""
+	Task 2a
+	"""
+	def docCountries(self, docID):
+		doc = dl.contains(docID)
+		return Counter(doc.countriesRead).most_common()
+
+	"""
+	Task 2b
+	"""
+	"""
+	def docContinents(self, docID):
+		doc = dl.contains(docID)
+		return doc.countriesRead
+	"""
+
+	"""
 	Task 4
 	"""
 	def topTenReaders(self):
@@ -29,20 +45,6 @@ class Sorter():
 				topten.append(user)
 			topten.sort()
 		return topten
-
-	"""
-	Task 2a
-	"""
-	def docCountries(self, docID):
-		doc = dl.contains(docID)
-		return Counter(doc.countriesRead).most_common()
-
-"""
-	def docContinents(self, docID):
-		doc = dl.contains(docID)
-		return doc.countriesRead
-"""
-
 
 	"""
 	Task 5a
@@ -61,28 +63,34 @@ class Sorter():
 	"""
 	Task 5d & 5e
 	"""
-	def alsoLiked(self, docID, userID=None, sortingFun="readerNum"):
+	def alsoLiked(self, docID, sortingFun="readerNum", userID=None):
 		totalUsers = self.docReaders(docID)
 
 		if not (userID is None):
 			if sortingFun == "readerNum":
 				doclist = []
+				""" Get list of all documents read by similar users """
 				for user in totalUsers:
+					if user.id == userID: # Remove searching user from temp user list
+						continue
 					for doc in user.docsRead
 						if doc.id == docID:
 							doclist = doclist + user.docsRead
 
-				counterlist =  Counter(doclist).most_common(11) #docID still in sorted list
+				""" Sort list into most frequent doc items """
+				counterlist =  Counter(doclist).most_common(10)
 				doclist = []
+				""" Edit list of sorted top documents to only save doc """
 				for doc in counterlist:
-					if not (doc[0].id == docID):
-						doclist.append(doc[0])
+					doclist.append(doc[0])
 				return doclist
 
 			if sortingFun == "readerProfile":
 				totalDocs = self.readDocs(userID)
 				users = []
 				for user in totalUsers:
+					if user.id == userID: # Remove searching user from temp user list
+						continue
 					for doc in user.docsRead
 						if doc.id == docID:
 							users.append(user)
@@ -91,8 +99,8 @@ class Sorter():
 				for user in users:
 					sameDocs = 0
 					for doc in totalDocs:
-						if doc in user.readDocs:
-							sameDocs = sameDocs + 1
+						if doc in user.docsRead:
+							sameDocs += 1
 					userFitnessList.append((user,sameDocs))
 				userFitnessList.sort(key=lambda tup: tup[1], reverse=True)
 				"""
@@ -100,6 +108,15 @@ class Sorter():
 					Use userFitnessList to return list of other documents
 					that user has not read
 				"""
+				docslist = []
+				index = 0
+				while len(docslist) < 10:
+					for doc in userFitnessList[index][0].docsRead:
+						if not (doc in totalDocs):
+							docslist.append(doc)
+					index += 1
+				return docslist[:10]
+
 		else:
 			if sortingFun == "readerProfile":
 				totalDocs = self.readDocs(userID)
