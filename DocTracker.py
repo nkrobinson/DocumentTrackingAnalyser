@@ -41,8 +41,8 @@ def __main__():
 	print("DOCUMENT ANALYSER COUNTRIES")
 	print(da.docCountries("140206010823-b14c9d966be950314215c17923a04af7"))
 
-	#print("DOCUMENT ANALYSER CONTINENTS")
-	#print(da.docContinents("140206010823-b14c9d966be950314215c17923a04af7"))
+	print("DOCUMENT ANALYSER CONTINENTS")
+	print(da.docContinents("140206010823-b14c9d966be950314215c17923a04af7"))
 
 	print("TOP TEN READERS")
 	print(da.topTenReaders())

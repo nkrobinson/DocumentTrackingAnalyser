@@ -50,7 +50,7 @@ class Sorter(object):
 		except KeyError:
 			print(_json)
 			print("Bad JSON")
-			#sys.exit(1)
+			sys.exit(1)
 
 	def _docAdd(self, jsondata):
 		doc = Doc(jsondata['subject_doc_id'])
