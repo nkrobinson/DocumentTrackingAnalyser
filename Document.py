@@ -8,9 +8,6 @@ By Nicholas Robinson
 
 class Document():
 
-	#	Parameters
-	#ID
-
 	def __init__(self,id):
 		self.id = id
 		self.usersRead = []

@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-Instance List
+Document Analyser
 By Nicholas Robinson
 """
 
-import Document
-import User
-import DocList
-import UserList
+from DataTypes import Document as Doc
+from DataTypes import User as User
+from List import ListContainer as List
 
 from collections import Counter
 
-class Sorter():
+class DocAnalyser():
 
 	def __init__(self, dl, ul):
 		self.dl = dl
@@ -23,16 +22,22 @@ class Sorter():
 	Task 2a
 	"""
 	def docCountries(self, docID):
-		doc = dl.contains(docID)
-		return Counter(doc.countriesRead).most_common()
+		if self.dl.contains(docID):
+			doc = self.dl.get(docID)
+			return Counter(doc.getCountries()).most_common()
+		else:
+			return []
 
 	"""
 	Task 2b
 	"""
 	"""
 	def docContinents(self, docID):
-		doc = dl.contains(docID)
-		return doc.countriesRead
+		if self.dl.contains(docID):
+			doc = self.dl.get(docID)
+			return Counter(doc.getCountries()).most_common()
+		else:
+			return []
 	"""
 
 	"""
@@ -40,28 +45,37 @@ class Sorter():
 	"""
 	def topTenReaders(self):
 		topten = []
-		for user in ul:
-			if len(topten) < 10 or user.docTotalTime > topten[0]:
-				topten.append(user)
-			topten.sort()
-		return topten
+		for user in self.ul:
+			if len(topten) < 10 or user.docTotalTime > topten[0][1]:
+				topten.append((user,user.docTotalTime))
+			topten.sort(key=lambda tup: tup[1], reverse=True)
+		return [user[0] for user in topten]
 
 	"""
 	Task 5a
 	"""
 	def docReaders(self, docID):
-		doc = dl.get(docID)
+		doc = self.dl.get(docID)
 		return doc.usersRead
 
 	"""
 	Task 5b
 	"""
 	def readDocs(self, userID):
-		user = ul.get(userID)
-		return user.docsRead
+		user = self.ul.get(userID)
+		return user.getDocs()
 
 	"""
 	Task 5d & 5e
+	Parameters
+		docID
+		sortingFun
+			Input tuple list of (Document, Time)
+			Output Document list
+		userID
+
+	Output
+		List of sorted documents
 	"""
 	def alsoLiked(self, docID, sortingFun="readerNum", userID=None):
 		totalUsers = self.docReaders(docID)
@@ -73,9 +87,10 @@ class Sorter():
 				for user in totalUsers:
 					if user.id == userID: # Remove searching user from temp user list
 						continue
-					for doc in user.docsRead
+					for doc in user.getDocs():
 						if doc.id == docID:
-							doclist = doclist + user.docsRead
+							doclist = doclist + user.getDocs()
+							break
 
 				""" Sort list into most frequent doc items """
 				counterlist =  Counter(doclist).most_common(10)
@@ -88,10 +103,35 @@ class Sorter():
 			if sortingFun == "readerProfile":
 				totalDocs = self.readDocs(userID)
 				users = []
+				docTimeListFull = []
 				for user in totalUsers:
 					if user.id == userID: # Remove searching user from temp user list
 						continue
-					for doc in user.docsRead
+					for doc in user.getDocs():
+						if doc[0].id == docID:
+							docTimeListFull += user.getDocTimes()
+
+				docTimeList = []
+				for doctime in docTimeListFull:
+					"""templist = (x[0] for x in docTimeList)""" #TO DO GENERATOR
+					templist = [x[0] for x in docTimeList]
+					if not (doctime[0] in templist):
+						docTimeList.append(doctime)
+					else:
+						for item in docTimeList:
+							if item[0] == doctime[0]:
+								item[1] += doctime[1]
+				docTimeList.sort(key=lambda tup: tup[1], reverse=True)
+				return docTimeList[:10]
+
+
+			if sortingFun == "closestReader":
+				totalDocs = self.readDocs(userID)
+				users = []
+				for user in totalUsers:
+					if user.id == userID: # Remove searching user from temp user list
+						continue
+					for doc in user.getDocs():
 						if doc.id == docID:
 							users.append(user)
 
@@ -103,11 +143,7 @@ class Sorter():
 							sameDocs += 1
 					userFitnessList.append((user,sameDocs))
 				userFitnessList.sort(key=lambda tup: tup[1], reverse=True)
-				"""
-				TO DO
-					Use userFitnessList to return list of other documents
-					that user has not read
-				"""
+
 				docslist = []
 				index = 0
 				while len(docslist) < 10:
@@ -118,11 +154,11 @@ class Sorter():
 				return docslist[:10]
 
 		else:
-			if sortingFun == "readerProfile":
+			if sortingFun == "closestReader":
 				totalDocs = self.readDocs(userID)
 				users = []
 				for user in totalUsers:
-					for doc in user.docsRead
+					for doc in user.getDocs():
 						if doc.id == docID:
 							users.append(user)
 
@@ -135,7 +171,7 @@ class Sorter():
 					userFitnessList.append((user,sameDocs))
 				userFitnessList.sort(key=lambda tup: tup[1], reverse=True)
 				doclist = userFitnessList[0][0].docsRead
-				doclist.remove(dl.get(docID))
+				doclist.remove(self.dl.get(docID))
 				return doclist
 			else:
 				print("ERROR")

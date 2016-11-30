@@ -6,10 +6,9 @@ Document Tracker
 By Nicholas Robinson
 """
 
-import Sorter
-import userList
-import DocList
-import DocAnalyser
+from Sorter import Sorter
+from List import ListContainer as List
+from DocAnalyser import DocAnalyser
 
 class DocTracker():
 
@@ -18,10 +17,13 @@ class DocTracker():
 		self.s = Sorter()
 		self.loadData()
 
-	def loadData(filename):
-		listSet = s.loadFile(filename)
-		self.ul = listSet[0]
-		self.dl = listSet[1]
+	def loadData(self):
+		listSet = self.s.loadFile()
+		self.dl = listSet[0]
+		self.ul = listSet[1]
+
+	def loadAnalyser(self):
+		self.da = DocAnalyser(self.dl, self.ul)
 
 	def argumentHandler(self):
 		"""
@@ -29,3 +31,26 @@ class DocTracker():
 		Argument Handling
 		"""
 		return
+
+
+def __main__():
+	dc = DocTracker()
+	dc.loadAnalyser()
+	da = dc.da
+
+	print("DOCUMENT ANALYSER COUNTRIES")
+	print(da.docCountries("140206010823-b14c9d966be950314215c17923a04af7"))
+
+	#print("DOCUMENT ANALYSER CONTINENTS")
+	#print(da.docContinents("140206010823-b14c9d966be950314215c17923a04af7"))
+
+	print("TOP TEN READERS")
+	print(da.topTenReaders())
+
+	print("DOCUMENT READERS")
+	print(da.docReaders("140206010823-b14c9d966be950314215c17923a04af7"))
+
+	print("READ DOCUMENTS")
+	print(da.readDocs("ade7e1f63bc83c66"))
+
+__main__()

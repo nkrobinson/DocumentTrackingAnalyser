@@ -6,21 +6,20 @@ User List
 By Nicholas Robinson
 """
 
-
 class ListContainer(object):
 
 	def __init__(self):
 		self.list = []
-		self._index = -1
 
 	def __iter__(self):
-        return self
+		self._index = -1
+		return self
 
-    def __next__(self):
-        if self.index == len(self.list):
-            raise StopIteration
-        self.index = self.index + 1
-        return self.list[self.index]
+	def __next__(self):
+		if self._index == (len(self.list) - 1):
+			raise StopIteration
+		self._index += 1
+		return self.list[self._index]
 
 	def add(self, item):
 		if not (self.contains(item)):
