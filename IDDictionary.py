@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-User List
+ID Dictionary
 By Nicholas Robinson
 """
 
@@ -22,7 +22,7 @@ class IDDictionary(object):
 		return self.dic[self._index]
 
 	def add(self, item):
-		if not (item.id in self.dic):
+		if not self.contains(item.id):
 			self.dic[item.id] = item
 
 	def contains(self, ID):
@@ -30,3 +30,6 @@ class IDDictionary(object):
 
 	def get(self, ID):
 		return self.dic[ID]
+
+	def getList(self):
+		return [self.dic[item] for item in self.dic]

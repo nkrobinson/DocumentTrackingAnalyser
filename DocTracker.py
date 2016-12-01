@@ -17,17 +17,17 @@ class DocTracker():
 		self.filename = filename
 		self.s = Sorter(filename)
 		self.loadData()
-		self.da = DocAnalyser(self.dc, self.uc, self.al)
+		self.da = DocAnalyser(self.dd, self.ud, self.al)
 		self.viz = Visualizer()
 
 	def loadData(self):
 		listSet = self.s.loadFile()
-		self.dc = listSet[0]
-		self.uc = listSet[1]
+		self.dd = listSet[0]
+		self.ud = listSet[1]
 		self.al = listSet[2]
 
 	def loadAnalyser(self):
-		self.da = DocAnalyser(self.dc, self.uc, self.al)
+		self.da = DocAnalyser(self.dd, self.ud, self.al)
 
 	def task2a(self, docID):
 		rawdata = self.da.docCountries(docID)
@@ -50,7 +50,7 @@ class DocTracker():
 		data = [x[1] for x in rawdata]
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Number of Users","User Agents","User Agents Document Views"]
-		self.viz.visualizeSideBar(data, datalabels, labels)
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
 		return rawdata
 
 	def task3b(self):
@@ -58,7 +58,7 @@ class DocTracker():
 		data = [x[1] for x in rawdata]
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Number of Users","User Agents","Browser Document Views"]
-		self.viz.visualizeSideBar(data, datalabels, labels)
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
 		return rawdata
 
 	def task4(self):
@@ -66,11 +66,23 @@ class DocTracker():
 		data = [x[1] for x in rawdata]
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Readers","Time Spent Reading","Top Readers Based on Reading Time"]
-		self.viz.visualizeBar(data, datalabels, labels)
+		self.viz.visualizeBar(data, datalabels, labels, 0.2)
 		return rawdata
 
 	def task5d(self, docID, userID=None):
-		return self.da.alsoLiked(docID, self.s.readerProfileSort, userID)
+		rawdata = self.da.alsoLiked(docID, self.s.readerProfileSort, userID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0].id for x in rawdata]
+		labels = ["Time Spent Reading","Documents","Task 5d"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		#return [(x[0].id,x[1]) for x in rawdata]
+		return rawdata
 
 	def task5e(self, docID, userID=None):
-		return self.da.alsoLiked(docID, self.s.readerNumberSort, userID)
+		rawdata = self.da.alsoLiked(docID, self.s.readerNumberSort, userID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0].id for x in rawdata]
+		labels = ["Number of Readers","Documents","Task 5e"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		#return [(x[0].id,x[1]) for x in rawdata]
+		return rawdata

@@ -19,8 +19,8 @@ class Sorter(object):
 
 	def __init__(self, filename):
 		self.filename = filename
-		self.dc = Dic()
-		self.uc = Dic()
+		self.dd = Dic()
+		self.ud = Dic()
 		self.al = []
 
 	def loadFile(self):
@@ -31,7 +31,7 @@ class Sorter(object):
 		except IOError:
 			print("Error reading file %s" % (filename))
 			sys.exit(1)
-		return (self.dc,self.uc, self.al)
+		return (self.dd,self.ud, self.al)
 
 	def _sortJson(self,_json):
 		data = json.loads(_json)
@@ -40,16 +40,12 @@ class Sorter(object):
 				return
 
 			""" Store Document Information """
-			#if not (self.uc.contains(data['subject_doc_id'])):
-			#	self._docAdd(data)
 			self._docAdd(data)
-			doc = self.dc.get(data['subject_doc_id'])
+			doc = self.dd.get(data['subject_doc_id'])
 
 			""" Store User Information """
-			#if not (self.uc.contains(data['visitor_uuid'])):
-			#	self._userAdd(data)
 			self._userAdd(data)
-			user = self.uc.get(data['visitor_uuid'])
+			user = self.ud.get(data['visitor_uuid'])
 
 			""" Store Document Viewing Information """
 			if 'event_readtime' in data:
@@ -60,7 +56,6 @@ class Sorter(object):
 			doc.countryRead(data['visitor_country'])
 
 			""" Store User Agent Information """
-			#self.al.append(parse(data['visitor_useragent']))
 			self.al.append(data['visitor_useragent'])
 		except KeyError:
 			print(_json)
@@ -69,16 +64,16 @@ class Sorter(object):
 
 	def _docAdd(self, jsondata):
 		doc = Doc(jsondata['subject_doc_id'])
-		self.dc.add(doc)
+		self.dd.add(doc)
 
 	def _userAdd(self, jsondata):
 		user = User(jsondata['visitor_uuid'])
-		self.uc.add(user)
+		self.ud.add(user)
 
 	def readerNumberSort(self, docTimeList):
-		doclist = [doc[0] for doc in docTimeList]
-		doclist = Counter(doclist).most_common(10)
-		return [doc[0] for doc in doclist]
+		returnlist = [doc[0] for doc in docTimeList]
+		returnlist = Counter(returnlist).most_common(10)
+		return returnlist
 
 	def readerProfileSort(self, docTimeListFull):
 		dicDocs = {}
@@ -91,4 +86,4 @@ class Sorter(object):
 		for doc in dicDocs:
 			returnlist.append((doc, dicDocs[doc]))
 		returnlist.sort(key=lambda tup: tup[1], reverse=True)
-		return [doc[0] for doc in returnlist]
+		return returnlist

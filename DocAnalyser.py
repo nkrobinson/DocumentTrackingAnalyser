@@ -16,17 +16,17 @@ from IDDictionary import IDDictionary as Dic
 
 class DocAnalyser():
 
-	def __init__(self, dc, uc, al):
-		self.dc = dc
-		self.uc = uc
+	def __init__(self, dd, ud, al):
+		self.dd = dd
+		self.ud = ud
 		self.al = al
 
 	"""
 	Task 2a
 	"""
 	def docCountries(self, docID):
-		if self.dc.contains(docID):
-			doc = self.dc.get(docID)
+		if self.dd.contains(docID):
+			doc = self.dd.get(docID)
 			return Counter(doc.getCountries()).most_common()
 		else:
 			return []
@@ -35,8 +35,8 @@ class DocAnalyser():
 	Task 2b
 	"""
 	def docContinents(self, docID):
-		if self.dc.contains(docID):
-			doc = self.dc.get(docID)
+		if self.dd.contains(docID):
+			doc = self.dd.get(docID)
 			continentlist = []
 			for country in doc.getCountries():
 				continentlist.append(self.countryToContinent(country))
@@ -70,7 +70,8 @@ class DocAnalyser():
 	"""
 	def topTenReaders(self):
 		topten = []
-		for user in self.uc:
+		userList = self.ud.getList()
+		for user in userList:
 			if len(topten) < 10 or user.docTotalTime > topten[0][1]:
 				topten.append((user,user.docTotalTime))
 			topten.sort(key=lambda tup: tup[1], reverse=True)
@@ -80,39 +81,45 @@ class DocAnalyser():
 	Task 5a
 	"""
 	def docReaders(self, docID):
-		doc = self.dc.get(docID)
+		doc = self.dd.get(docID)
 		return doc.usersRead
 
 	"""
 	Task 5b
 	"""
 	def readDocs(self, userID):
-		user = self.uc.get(userID)
+		user = self.ud.get(userID)
 		return user.getDocs()
 
 	"""
 	Task 5d & 5e
 	"""
 	def alsoLiked(self, docID, sortFun=None, userID=None):
-		if not self.dc.contains(docID):
-			print("ERROR")
+		if not self.dd.contains(docID):
+			print("ERROR: Bad Document UUID")
 			return None
 			"""throw Error +-+-+-+-+- FIX THIS -+-+-+-+-+"""
 		if sortFun is None:
 			sortFun = self.noSort
 		totalUsers = self.docReaders(docID)
 		docTimeListFull=[]
-		doc = self.dc.get(docID)
+		doc = self.dd.get(docID)
 		if userID is None:
 			for user in totalUsers:
-				if doc in user.getDocs():
-					docTimeListFull += user.getDocTimes()
+				tempDict = dict(user.getDocTimes())
+				if doc in tempDict:
+					del tempDict[doc]
+				tempList = [(doc,tempDict[doc]) for doc in tempDict]
+				docTimeListFull += tempList
 		else:
 			for user in totalUsers:
 				if user.id == userID: # Remove searching user from temp user list
 					continue
-				if doc in user.getDocs():
-					docTimeListFull += user.getDocTimes()
+				tempDict = dict(user.getDocTimes())
+				if doc in tempDict:
+					del tempDict[doc]
+				tempList = [(doc,tempDict[doc]) for doc in tempDict]
+				docTimeListFull += tempList
 		return sortFun(docTimeListFull)
 
 	def noSort(self, data):

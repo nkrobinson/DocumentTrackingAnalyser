@@ -24,14 +24,11 @@ def argumentHandler():
 	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
 						default="data/sample_100k_lines.json")
 	parser.add_argument('-t', '--task', nargs='+', help='task(s) to execute',
-						choices=["task2a","task2b","task3a","task3b","task4",
-						"task5d","task5e"])
+						choices=["2a","2b","3a","3b","4","5d","5e"])
 	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
 	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
 	parser.print_help()
 	args=parser.parse_args()
-	print(args.file)
-	print(args.task)
 	return args
 
 def runDocTracker(args):
@@ -40,42 +37,42 @@ def runDocTracker(args):
 	start = time.time()
 	dt.loadAnalyser()
 	end = time.time()
-	print(end - start)
+	print("Time to load data: %f" % (end - start))
 
 	print("Analysing Data")
 	if args.task is None:
 		return
 	for task in args.task:
-		if task == "task2a":
+		if task == "2a":
 			if args.doc_uuid is not None:
 				print(dt.task2a(args.doc_uuid))
 			else:
 				print("ERROR: NEED DOC ID")
-		elif task == "task2b":
+		elif task == "2b":
 			if args.doc_uuid is not None:
 				print(dt.task2b(args.doc_uuid))
 			else:
 				print("ERROR: NEED DOC ID")
-		elif task == "task3a":
+		elif task == "3a":
 			print(dt.task3a())
-		elif task == "task3b":
+		elif task == "3b":
 			print(dt.task3b())
-		elif task == "task4":
+		elif task == "4":
 			print(dt.task4())
-		elif task == "task5d":
+		elif task == "5d":
 			if args.doc_uuid is not None:
 				if args.user_uuid is not None:
-					print(dt.task5d(doc_uuid, user_uuid))
+					print(dt.task5d(args.doc_uuid, args.user_uuid))
 				else:
-					print(dt.task5d(doc_uuid))
+					print(dt.task5d(args.doc_uuid))
 			else:
 				print("ERROR: NEED DOC ID")
-		elif task == "task5e":
+		elif task == "5e":
 			if args.doc_uuid is not None:
 				if args.user_uuid is not None:
-					print(dt.task5e(doc_uuid, user_uuid))
+					print(dt.task5e(args.doc_uuid, args.user_uuid))
 				else:
-					print(dt.task5e(doc_uuid))
+					print(dt.task5e(args.doc_uuid))
 			else:
 				print("ERROR: NEED DOC ID")
 

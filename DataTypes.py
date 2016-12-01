@@ -20,16 +20,18 @@ class User(IDObject):
 
 	def __init__(self,id):
 		IDObject.__init__(self,id)
-		self.docsRead = []
+		self.docsRead = {}
 		self.docTotalTime = 0
 
 	def readDoc(self, doc, time=0):
-		if not (doc in self.docsRead):
-			self.docsRead.append((doc, time))
+		if not doc in self.docsRead:
+			self.docsRead[doc] = time
+		else:
+			self.docsRead[doc] += time
 		self.docTotalTime += time
 
 	def getDocs(self):
-		return [doc[0] for doc in self.docsRead]
+		return [self.docsRead[doc] for doc in self.docsRead]
 
 	def getDocTimes(self):
 		return self.docsRead
