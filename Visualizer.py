@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from DataTypes import Document as Doc
 from DataTypes import User as User
-from List import ListContainer as List
+from IDDictionary import IDDictionary as Dic
 
 class Visualizer():
 

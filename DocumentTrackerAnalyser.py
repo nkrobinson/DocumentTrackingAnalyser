@@ -8,22 +8,79 @@ By Nicholas Robinson
 Run this script to run the DocumentTrackerAnalyser program.
 """
 
-import getopt
+import argparse
 import sys
+import time
 
 from DocTracker import DocTracker
 
-argv = sys.argv[1:]
-
-def argumentHandler(self):
+def argumentHandler():
 	"""
 	TO DO
 	Argument Handling
 	"""
-	return
+	parser = argparse.ArgumentParser(prog='DocumentTrackerAnalyser', usage='%(prog)s [options]')
+	parser = argparse.ArgumentParser(description='Analyse Document Tracking Data')
+	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
+						default="data/sample_100k_lines.json")
+	parser.add_argument('-t', '--task', nargs='+', help='task(s) to execute',
+						choices=["task2a","task2b","task3a","task3b","task4",
+						"task5d","task5e"])
+	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
+	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
+	parser.print_help()
+	args=parser.parse_args()
+	print(args.file)
+	print(args.task)
+	return args
+
+def runDocTracker(args):
+	dt = DocTracker(args.file)
+	print("Loading Data")
+	start = time.time()
+	dt.loadAnalyser()
+	end = time.time()
+	print(end - start)
+
+	print("Analysing Data")
+	if args.task is None:
+		return
+	for task in args.task:
+		if task == "task2a":
+			if args.doc_uuid is not None:
+				print(dt.task2a(args.doc_uuid))
+			else:
+				print("ERROR: NEED DOC ID")
+		elif task == "task2b":
+			if args.doc_uuid is not None:
+				print(dt.task2b(args.doc_uuid))
+			else:
+				print("ERROR: NEED DOC ID")
+		elif task == "task3a":
+			print(dt.task3a())
+		elif task == "task3b":
+			print(dt.task3b())
+		elif task == "task4":
+			print(dt.task4())
+		elif task == "task5d":
+			if args.doc_uuid is not None:
+				if args.user_uuid is not None:
+					print(dt.task5d(doc_uuid, user_uuid))
+				else:
+					print(dt.task5d(doc_uuid))
+			else:
+				print("ERROR: NEED DOC ID")
+		elif task == "task5e":
+			if args.doc_uuid is not None:
+				if args.user_uuid is not None:
+					print(dt.task5e(doc_uuid, user_uuid))
+				else:
+					print(dt.task5e(doc_uuid))
+			else:
+				print("ERROR: NEED DOC ID")
 
 
-def __main__(argv):
+def testingFun():
 	dt = DocTracker("data/sample_100k_lines.json")
 	dt.loadAnalyser()
 	#da = dt.da
@@ -66,4 +123,9 @@ def __main__(argv):
 	print("ALSO LIKED READER NUMBER SORT")
 	print(dt.task5e("140206010823-b14c9d966be950314215c17923a04af7"))
 
-__main__(argv)
+def __main__():
+	#testingFun()
+	args = argumentHandler()
+	runDocTracker(args)
+
+__main__()

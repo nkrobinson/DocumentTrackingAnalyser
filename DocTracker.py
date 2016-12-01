@@ -7,27 +7,27 @@ By Nicholas Robinson
 """
 
 from Sorter import Sorter
-from List import ListContainer as List
+from IDDictionary import IDDictionary as Dic
 from DocAnalyser import DocAnalyser
 from Visualizer import Visualizer
 
 class DocTracker():
 
-	def __init__(self, filename="data/issuu_cw2.json"):
+	def __init__(self, filename):
 		self.filename = filename
-		self.s = Sorter()
+		self.s = Sorter(filename)
 		self.loadData()
-		self.da = DocAnalyser(self.dl, self.ul, self.al)
+		self.da = DocAnalyser(self.dc, self.uc, self.al)
 		self.viz = Visualizer()
 
 	def loadData(self):
 		listSet = self.s.loadFile()
-		self.dl = listSet[0]
-		self.ul = listSet[1]
+		self.dc = listSet[0]
+		self.uc = listSet[1]
 		self.al = listSet[2]
 
 	def loadAnalyser(self):
-		self.da = DocAnalyser(self.dl, self.ul, self.al)
+		self.da = DocAnalyser(self.dc, self.uc, self.al)
 
 	def task2a(self, docID):
 		rawdata = self.da.docCountries(docID)

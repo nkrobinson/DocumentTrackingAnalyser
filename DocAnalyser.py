@@ -12,21 +12,21 @@ import re
 
 from DataTypes import Document as Doc
 from DataTypes import User as User
-from List import ListContainer as List
+from IDDictionary import IDDictionary as Dic
 
 class DocAnalyser():
 
-	def __init__(self, dl, ul, al):
-		self.dl = dl
-		self.ul = ul
+	def __init__(self, dc, uc, al):
+		self.dc = dc
+		self.uc = uc
 		self.al = al
 
 	"""
 	Task 2a
 	"""
 	def docCountries(self, docID):
-		if self.dl.contains(docID):
-			doc = self.dl.get(docID)
+		if self.dc.contains(docID):
+			doc = self.dc.get(docID)
 			return Counter(doc.getCountries()).most_common()
 		else:
 			return []
@@ -35,8 +35,8 @@ class DocAnalyser():
 	Task 2b
 	"""
 	def docContinents(self, docID):
-		if self.dl.contains(docID):
-			doc = self.dl.get(docID)
+		if self.dc.contains(docID):
+			doc = self.dc.get(docID)
 			continentlist = []
 			for country in doc.getCountries():
 				continentlist.append(self.countryToContinent(country))
@@ -55,14 +55,14 @@ class DocAnalyser():
 	Task 3a
 	"""
 	def userAgentsString(self):
-		tempal = (str(agent) for agent in self.al)
+		tempal = (str(parse(agent)) for agent in self.al)
 		return Counter(tempal).most_common()
 
 	"""
 	Task 3b
 	"""
 	def userAgentsStringBrowser(self):
-		tempal = (agent.browser.family for agent in self.al)
+		tempal = (parse(agent).browser.family for agent in self.al)
 		return Counter(tempal).most_common()
 
 	"""
@@ -70,32 +70,31 @@ class DocAnalyser():
 	"""
 	def topTenReaders(self):
 		topten = []
-		for user in self.ul:
+		for user in self.uc:
 			if len(topten) < 10 or user.docTotalTime > topten[0][1]:
 				topten.append((user,user.docTotalTime))
 			topten.sort(key=lambda tup: tup[1], reverse=True)
 		return topten
-		#return [user[0] for user in topten]
 
 	"""
 	Task 5a
 	"""
 	def docReaders(self, docID):
-		doc = self.dl.get(docID)
+		doc = self.dc.get(docID)
 		return doc.usersRead
 
 	"""
 	Task 5b
 	"""
 	def readDocs(self, userID):
-		user = self.ul.get(userID)
+		user = self.uc.get(userID)
 		return user.getDocs()
 
 	"""
 	Task 5d & 5e
 	"""
 	def alsoLiked(self, docID, sortFun=None, userID=None):
-		if not self.dl.contains(docID):
+		if not self.dc.contains(docID):
 			print("ERROR")
 			return None
 			"""throw Error +-+-+-+-+- FIX THIS -+-+-+-+-+"""
@@ -103,7 +102,7 @@ class DocAnalyser():
 			sortFun = self.noSort
 		totalUsers = self.docReaders(docID)
 		docTimeListFull=[]
-		doc = self.dl.get(docID)
+		doc = self.dc.get(docID)
 		if userID is None:
 			for user in totalUsers:
 				if doc in user.getDocs():

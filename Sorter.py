@@ -13,21 +13,25 @@ from collections import Counter
 
 from DataTypes import Document as Doc
 from DataTypes import User
-from List import ListContainer as List
+from IDDictionary import IDDictionary as Dic
 
 class Sorter(object):
 
-	def __init__(self, filename="data/issuu_cw2.json"):
+	def __init__(self, filename):
 		self.filename = filename
-		self.dl = List()
-		self.ul = List()
+		self.dc = Dic()
+		self.uc = Dic()
 		self.al = []
 
 	def loadFile(self):
-		file_ = open(self.filename, 'r')
-		for line in file_:
-			self._sortJson(line)
-		return (self.dl,self.ul, self.al)
+		try:
+			file_ = open(self.filename, 'r')
+			for line in file_:
+				self._sortJson(line)
+		except IOError:
+			print("Error reading file %s" % (filename))
+			sys.exit(1)
+		return (self.dc,self.uc, self.al)
 
 	def _sortJson(self,_json):
 		data = json.loads(_json)
@@ -36,14 +40,16 @@ class Sorter(object):
 				return
 
 			""" Store Document Information """
-			if not (self.ul.contains(data['subject_doc_id'])):
-				self._docAdd(data)
-			doc = self.dl.get(data['subject_doc_id'])
+			#if not (self.uc.contains(data['subject_doc_id'])):
+			#	self._docAdd(data)
+			self._docAdd(data)
+			doc = self.dc.get(data['subject_doc_id'])
 
 			""" Store User Information """
-			if not (self.ul.contains(data['visitor_uuid'])):
-				self._userAdd(data)
-			user = self.ul.get(data['visitor_uuid'])
+			#if not (self.uc.contains(data['visitor_uuid'])):
+			#	self._userAdd(data)
+			self._userAdd(data)
+			user = self.uc.get(data['visitor_uuid'])
 
 			""" Store Document Viewing Information """
 			if 'event_readtime' in data:
@@ -54,7 +60,8 @@ class Sorter(object):
 			doc.countryRead(data['visitor_country'])
 
 			""" Store User Agent Information """
-			self.al.append(parse(data['visitor_useragent']))
+			#self.al.append(parse(data['visitor_useragent']))
+			self.al.append(data['visitor_useragent'])
 		except KeyError:
 			print(_json)
 			print("Bad JSON")
@@ -62,11 +69,11 @@ class Sorter(object):
 
 	def _docAdd(self, jsondata):
 		doc = Doc(jsondata['subject_doc_id'])
-		self.dl.add(doc)
+		self.dc.add(doc)
 
 	def _userAdd(self, jsondata):
 		user = User(jsondata['visitor_uuid'])
-		self.ul.add(user)
+		self.uc.add(user)
 
 	def readerNumberSort(self, docTimeList):
 		doclist = [doc[0] for doc in docTimeList]

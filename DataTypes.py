@@ -6,7 +6,7 @@ List Object
 By Nicholas Robinson
 """
 
-class ListObject(object):
+class IDObject(object):
 
 	def __init__(self,id):
 		self.id = id
@@ -16,10 +16,10 @@ User
 By Nicholas Robinson
 """
 
-class User(ListObject):
+class User(IDObject):
 
 	def __init__(self,id):
-		ListObject.__init__(self,id)
+		IDObject.__init__(self,id)
 		self.docsRead = []
 		self.docTotalTime = 0
 
@@ -40,10 +40,10 @@ Document
 By Nicholas Robinson
 """
 
-class Document(ListObject):
+class Document(IDObject):
 
 	def __init__(self,id):
-		ListObject.__init__(self,id)
+		IDObject.__init__(self,id)
 		self.usersRead = []
 		self.countriesRead = []
 
