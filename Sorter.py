@@ -9,6 +9,7 @@ By Nicholas Robinson
 import json
 import sys
 from user_agents import parse
+from collections import Counter
 
 from DataTypes import Document as Doc
 from DataTypes import User
@@ -67,3 +68,21 @@ class Sorter(object):
 	def _userAdd(self, jsondata):
 		user = User(jsondata['visitor_uuid'])
 		self.ul.add(user)
+
+	def readerNumberSort(self, docTimeList):
+		doclist = [doc[0] for doc in docTimeList]
+		doclist = Counter(doclist).most_common(10)
+		return [doc[0] for doc in doclist]
+
+	def readerProfileSort(self, docTimeListFull):
+		dicDocs = {}
+		for doc in docTimeListFull:
+			if not doc[0] in dicDocs:
+				dicDocs[doc[0]] = doc[1]
+			else:
+				dicDocs[doc[0]] += doc[1]
+		returnlist = []
+		for doc in dicDocs:
+			returnlist.append((doc, dicDocs[doc]))
+		returnlist.sort(key=lambda tup: tup[1], reverse=True)
+		return [doc[0] for doc in returnlist]

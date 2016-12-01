@@ -96,115 +96,31 @@ class DocAnalyser():
 
 	"""
 	Task 5d & 5e
-	Parameters
-		docID
-		sortingFun
-			Input tuple list of (Document, Time)
-			Output Document list
-		userID
-
-	Output
-		List of sorted documents
 	"""
-	def alsoLiked(self, docID, sortingFun="readerNum", userID=None):
+	def alsoLiked(self, docID, sortFun=None, userID=None):
+		if not self.dl.contains(docID):
+			print("ERROR")
+			return None
+			"""throw Error +-+-+-+-+- FIX THIS -+-+-+-+-+"""
+		if sortFun is None:
+			sortFun = self.noSort
 		totalUsers = self.docReaders(docID)
-
-		if not (userID is None):
-			if sortingFun == "readerNum":
-				doclist = []
-				""" Get list of all documents read by similar users """
-				for user in totalUsers:
-					if user.id == userID: # Remove searching user from temp user list
-						continue
-					for doc in user.getDocs():
-						if doc.id == docID:
-							doclist = doclist + user.getDocs()
-							break
-
-				""" Sort list into most frequent doc items """
-				counterlist =Counter(doclist).most_common(10)
-				doclist = []
-				""" Edit list of sorted top documents to only save doc """
-				for doc in counterlist:
-					doclist.append(doc[0])
-				return doclist
-
-			if sortingFun == "readerProfile":
-				totalDocs = self.readDocs(userID)
-				users = []
-				docTimeListFull = []
-				for user in totalUsers:
-					if user.id == userID: # Remove searching user from temp user list
-						continue
-					for doc in user.getDocs():
-						if doc[0].id == docID:
-							docTimeListFull += user.getDocTimes()
-
-				docTimeList = []
-				for doctime in docTimeListFull:
-					"""templist = (x[0] for x in docTimeList)""" #TO DO GENERATOR
-					templist = [x[0] for x in docTimeList]
-					if not (doctime[0] in templist):
-						docTimeList.append(doctime)
-					else:
-						for item in docTimeList:
-							if item[0] == doctime[0]:
-								item[1] += doctime[1]
-				docTimeList.sort(key=lambda tup: tup[1], reverse=True)
-				return docTimeList[:10]
-
-
-			if sortingFun == "closestReader":
-				totalDocs = self.readDocs(userID)
-				users = []
-				for user in totalUsers:
-					if user.id == userID: # Remove searching user from temp user list
-						continue
-					for doc in user.getDocs():
-						if doc.id == docID:
-							users.append(user)
-
-				userFitnessList = []
-				for user in users:
-					sameDocs = 0
-					for doc in totalDocs:
-						if doc in user.docsRead:
-							sameDocs += 1
-					userFitnessList.append((user,sameDocs))
-				userFitnessList.sort(key=lambda tup: tup[1], reverse=True)
-
-				docslist = []
-				index = 0
-				while len(docslist) < 10:
-					for doc in userFitnessList[index][0].docsRead:
-						if not (doc in totalDocs):
-							docslist.append(doc)
-					index += 1
-				return docslist[:10]
-
+		docTimeListFull=[]
+		doc = self.dl.get(docID)
+		if userID is None:
+			for user in totalUsers:
+				if doc in user.getDocs():
+					docTimeListFull += user.getDocTimes()
 		else:
-			if sortingFun == "closestReader":
-				totalDocs = self.readDocs(userID)
-				users = []
-				for user in totalUsers:
-					for doc in user.getDocs():
-						if doc.id == docID:
-							users.append(user)
+			for user in totalUsers:
+				if user.id == userID: # Remove searching user from temp user list
+					continue
+				if doc in user.getDocs():
+					docTimeListFull += user.getDocTimes()
+		return sortFun(docTimeListFull)
 
-				userFitnessList = []
-				for user in users:
-					sameDocs = 0
-					for doc in totalDocs:
-						if doc in user.readDocs:
-							sameDocs = sameDocs + 1
-					userFitnessList.append((user,sameDocs))
-				userFitnessList.sort(key=lambda tup: tup[1], reverse=True)
-				doclist = userFitnessList[0][0].docsRead
-				doclist.remove(self.dl.get(docID))
-				return doclist
-			else:
-				print("ERROR")
-				return []
+	def noSort(self, data):
+		return data
 
 	def countryToContinent(self, country):
 		country_to_continent = {
