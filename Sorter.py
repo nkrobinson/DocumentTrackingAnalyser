@@ -26,7 +26,6 @@ class Sorter(object):
 	def loadFile(self):
 		file_ = open(self.filename, 'r')
 		for line in file_:
-			#print(line)
 			self._sortJson(line)
 		return (self.dl,self.ul, self.al)
 

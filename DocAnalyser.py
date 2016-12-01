@@ -61,13 +61,9 @@ class DocAnalyser():
 	"""
 	Task 3b
 	"""
-	def userAgentsStringShort(self):
-		tempal = (self.getMainBrowser(str(agent)) for agent in self.al)
+	def userAgentsStringBrowser(self):
+		tempal = (agent.browser.family for agent in self.al)
 		return Counter(tempal).most_common()
-
-	def getMainBrowser(self, string):
-		temp = re.split('\/', string)
-		return temp[len(temp)-1]
 
 	"""
 	Task 4
@@ -78,7 +74,8 @@ class DocAnalyser():
 			if len(topten) < 10 or user.docTotalTime > topten[0][1]:
 				topten.append((user,user.docTotalTime))
 			topten.sort(key=lambda tup: tup[1], reverse=True)
-		return [user[0] for user in topten]
+		return topten
+		#return [user[0] for user in topten]
 
 	"""
 	Task 5a
