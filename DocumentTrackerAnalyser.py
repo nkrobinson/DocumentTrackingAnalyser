@@ -24,7 +24,7 @@ def argumentHandler():
 	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
 						default="data/sample_100k_lines.json")
 	parser.add_argument('-t', '--task', nargs='+', help='task(s) to execute',
-						choices=["2a","2b","3a","3b","4","5d","5e"])
+						choices=["2a","2b","3a","3b","4","5d","5e"], required=True)
 	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
 	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
 	parser.print_help()
@@ -32,12 +32,12 @@ def argumentHandler():
 	return args
 
 def runDocTracker(args):
-	dt = DocTracker(args.file)
 	print("Loading Data")
 	start = time.time()
-	dt.loadAnalyser()
+	dt = DocTracker(args.file)
 	end = time.time()
 	print("Time to load data: %f" % (end - start))
+	dt.loadAnalyser()
 
 	print("Analysing Data")
 	if args.task is None:

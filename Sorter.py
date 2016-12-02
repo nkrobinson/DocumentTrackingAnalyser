@@ -28,9 +28,10 @@ class Sorter(object):
 			file_ = open(self.filename, 'r')
 			for line in file_:
 				self._sortJson(line)
-		except IOError:
-			print("Error reading file %s" % (filename))
-			sys.exit(1)
+		except IOError as e:
+			print("I/O error({0}): {1}".format(e.errno, e.strerror))
+		except NameError as e:
+			print("Name error({0}): {1}".format(e.errno, e.strerror))
 		return (self.dd,self.ud, self.al)
 
 	def _sortJson(self,_json):

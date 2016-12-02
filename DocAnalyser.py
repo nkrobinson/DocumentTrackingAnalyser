@@ -96,9 +96,8 @@ class DocAnalyser():
 	"""
 	def alsoLiked(self, docID, sortFun=None, userID=None):
 		if not self.dd.contains(docID):
-			print("ERROR: Bad Document UUID")
+			raise BadIDException(docID)
 			return None
-			"""throw Error +-+-+-+-+- FIX THIS -+-+-+-+-+"""
 		if sortFun is None:
 			sortFun = self.noSort
 		totalUsers = self.docReaders(docID)
@@ -112,6 +111,9 @@ class DocAnalyser():
 				tempList = [(doc,tempDict[doc]) for doc in tempDict]
 				docTimeListFull += tempList
 		else:
+			if not self.ud.contains(userID):
+				raise BadIDException(userID)
+				return None
 			for user in totalUsers:
 				if user.id == userID: # Remove searching user from temp user list
 					continue
@@ -378,3 +380,7 @@ class DocAnalyser():
 		'ZW' : 'AF'
 		}
 		return country_to_continent[country]
+
+class BadIDException(Exception):
+	def __init__(self, error):
+		print("%s ID does not exist" % (error))
