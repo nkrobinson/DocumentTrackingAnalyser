@@ -29,7 +29,8 @@ class DocAnalyser():
 			doc = self.dd.get(docID)
 			return Counter(doc.getCountries()).most_common()
 		else:
-			return []
+			raise BadIDException("ID %s does not exist"%(docID),str(docID))
+			return None
 
 	"""
 	Task 2b
@@ -42,7 +43,8 @@ class DocAnalyser():
 				continentlist.append(self.countryToContinent(country))
 			return Counter(continentlist).most_common()
 		else:
-			return []
+			raise BadIDException("ID %s does not exist"%(docID),str(docID))
+			return None
 
 	"""
 	Task 3
@@ -80,6 +82,9 @@ class DocAnalyser():
 	Task 5a
 	"""
 	def docReaders(self, docID):
+		if not self.dd.contains(docID):
+			raise BadIDException("ID %s does not exist"%(docID),str(docID))
+			return None
 		doc = self.dd.get(docID)
 		return doc.usersRead
 
@@ -87,6 +92,9 @@ class DocAnalyser():
 	Task 5b
 	"""
 	def readDocs(self, userID):
+		if not self.ud.contains(userID):
+			raise BadIDException("ID %s does not exist"%(userID),str(userID))
+			return None
 		user = self.ud.get(userID)
 		return user.getDocs()
 
@@ -95,7 +103,7 @@ class DocAnalyser():
 	"""
 	def alsoLiked(self, docID, sortFun=None, userID=None):
 		if not self.dd.contains(docID):
-			raise BadIDException(docID)
+			raise BadIDException("ID %s does not exist"%(docID),str(docID))
 			return None
 		if sortFun is None:
 			sortFun = self.noSort
@@ -111,7 +119,7 @@ class DocAnalyser():
 				docTimeListFull += tempList
 		else:
 			if not self.ud.contains(userID):
-				raise BadIDException(userID)
+				raise BadIDException("ID %s does not exist"%(userID),str(userID))
 				return None
 			for user in totalUsers:
 				if user.id == userID: # Remove searching user from temp user list
@@ -381,5 +389,7 @@ class DocAnalyser():
 		return country_to_continent[country]
 
 class BadIDException(Exception):
-	def __init__(self, error):
-		print("%s ID does not exist" % (error))
+	def __init__(self, message, error):
+		self.message = message
+		self.error = error
+		#print("%s ID does not exist" % (error))

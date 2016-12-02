@@ -76,89 +76,77 @@ class GUI():
 	def verifyUserID(self):
 		return self._user.get() != ""
 
+	def taskFileMissingCheck(self, taskName):
+		self.errorLabel['text'] = "Running Task %s" % (taskName)
+		if not self.verifyFileName():
+			self.errorLabel['text'] = "Task %s Failed: No File Selected" % (taskName)
+			return True
+		return False
+
+	def tryTask(self, taskName, task, arg1=None, arg2=None):
+			try:
+				if arg1 is None:
+					task()
+				elif arg2 is None:
+					task(arg1)
+				else:
+					task(arg1, arg2)
+			except AssertionError as e:
+				self.errorLabel['text'] = "Task %s Failed: No Document UUID" % (taskName)
+			except Exception as e:
+				self.errorLabel['text'] = "Task %s Failed: %s" % (taskName, e.message)
+			else:
+				self.errorLabel['text'] = "Task %s Completed" % (taskName)
+
+	def tryTask5(self, taskName, task):
+		assert(self.verifyDocID())
+		if self.verifyUserID():
+			task(self._doc.get(), self._user.get())
+			self.errorLabel['text'] = "Task %s Completed" % (taskName)
+			return
+		task(self._doc.get())
+		self.errorLabel['text'] = "Task %s Completed" % (taskName)
 
 	def task2a(self):
-		self.errorLabel['text'] = "Running Task 2a"
+		if self.taskFileMissingCheck("2a"):
+			return
 		if self.verifyDocID():
-			try:
-				self.dt.task2a(self._doc.get())
-			except Exception as e:
-				self.errorLabel['text'] = "Task 2a Failed: %s" % (e.message)
-			self.errorLabel['text'] = "Task 2a Completed"
+			self.tryTask("2a", self.dt.task2a, self._doc.get())
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
-		return
 
 	def task2b(self):
-		self.errorLabel['text'] = "Running Task 2b"
+		if self.taskFileMissingCheck("2b"):
+			return
 		if self.verifyDocID():
-			try:
-				self.dt.task2b(self._doc.get())
-			except Exception as e:
-				self.errorLabel['text'] = "Task 2b Failed: %s" % (e.message)
-			self.errorLabel['text'] = "Task 2b Completed"
+			self.tryTask("2b", self.dt.task2b, self._doc.get())
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
-		return
 
 	def task3a(self):
-		self.errorLabel['text'] = "Running Task 3a"
-		try:
-			self.dt.task3a()
-		except Exception as e:
-			self.errorLabel['text'] = "Task 3a Failed: %s" % (e.message)
-		self.errorLabel['text'] = "Task 3a Completed"
-		return
+		if self.taskFileMissingCheck("3a"):
+			return
+		self.tryTask("3a", self.dt.task3a)
 
 	def task3b(self):
-		self.errorLabel['text'] = "Running Task 3b"
-		try:
-			self.dt.task3b()
-		except Exception as e:
-			self.errorLabel['text'] = "Task 3b Failed: %s" % (e.message)
-		self.errorLabel['text'] = "Task 3b Completed"
-		return
+		if self.taskFileMissingCheck("3b"):
+			return
+		self.tryTask("3b", self.dt.task3b)
 
 	def task4(self):
-		self.errorLabel['text'] = "Running Task 4"
-		try:
-			self.dt.task4()
-		except Exception as e:
-			self.errorLabel['text'] = "Task 4 Failed: %s" % (e.message)
-		self.errorLabel['text'] = "Task 4 Completed"
-		return
+		if self.taskFileMissingCheck("4"):
+			return
+		self.tryTask("4", self.dt.task4)
 
 	def task5d(self):
-		self.errorLabel['text'] = "Running Task 5d"
-		try:
-			if self.verifyDocID():
-				if self.verifyUserID():
-					self.dt.task5d(self._doc.get(), self._user.get())
-					self.errorLabel['text'] = "Task 5d Completed"
-					return
-				self.dt.task5d(self._doc.get())
-				self.errorLabel['text'] = "Task 5d Completed"
-				return
-			self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
-		except Exception as e:
-			self.errorLabel['text'] = "Task 5d Failed: %s" % (e.message)
-		return
+		if self.taskFileMissingCheck("5d"):
+			return
+		self.tryTask("5d",self.tryTask5, "5d", self.dt.task5d)
 
 	def task5e(self):
-		self.errorLabel['text'] = "Running Task 5e"
-		try:
-			if self.verifyDocID():
-				if self.verifyUserID():
-					self.dt.task5e(self._doc.get(), self._user.get())
-					self.errorLabel['text'] = "Task 5e Completed"
-					return
-				self.dt.task5e(self._doc.get())
-				self.errorLabel['text'] = "Task 5e Completed"
-				return
-			self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
-		except Exception as e:
-			self.errorLabel['text'] = "Task 5e Failed: %s" % (e.message)
-		return
+		if self.taskFileMissingCheck("5e"):
+			return
+		self.tryTask("5e",self.tryTask5, "5e", self.dt.task5e)
 
 def __main__():
 	gui = GUI()
