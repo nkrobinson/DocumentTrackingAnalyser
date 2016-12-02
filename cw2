@@ -14,12 +14,9 @@ import time
 
 from DTA import DTA
 
+
 def argumentHandler():
-	"""
-	TO DO
-	Argument Handling
-	"""
-	parser = argparse.ArgumentParser(prog='DocumentTrackerAnalyser', usage='%(prog)s [options]')
+	parser = argparse.ArgumentParser(prog='cw2', usage='%(prog)s [options]')
 	parser = argparse.ArgumentParser(description='Analyse Document Tracking Data')
 	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
 						default="data/sample_100k_lines.json")
@@ -43,11 +40,14 @@ def runDocTracker(args):
 		return
 	for task in args.task:
 		try:
-			runTask(task, args, dt)
+			runTask(task, args, dta)
 		except AssertionError as e:
 			print("Error: %s is blank" % (e.args[0]))
+		except Exception as e:
+			print("Error: %s" % (e.args[0]))
 
-def runTask(task, args, dt):
+def runTask(task, args, dta):
+	print("Running Task %s" % (task))
 	if task == "2a":
 		assert(args.doc_uuid is not None), "-d"
 		print(dta.task2a(args.doc_uuid))

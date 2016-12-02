@@ -4,31 +4,27 @@
 """
 Visualizer
 By Nicholas Robinson
+
+Plot Graphs with data from Document Tracker Analyser System
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-from DataTypes import Document as Doc
-from DataTypes import User as User
-from IDDictionary import IDDictionary as Dic
-
 class Visualizer():
 
-	def __init__(self):
-		self.something = 0
-
+	""" Create Vertical Bar Chart Histogram
+	"""
 	def visualizeBar(self, data, datalabels, labels, padding=0.2, colour='#d61c1c'):
-		pos = np.arange(len(data))+.5
+		xpos = np.arange(len(data))+.5
 		fig, ax = plt.subplots()
-		bars = ax.bar(pos,data, align='center', color=colour)
-		ax.set_xticks(pos)
+		bars = ax.bar(xpos,data, align='center', color=colour)
+		ax.set_xticks(xpos)
 		ax.set_xticklabels(datalabels, rotation=30, ha='right')
 		plt.xlabel(labels[0])
 		plt.ylabel(labels[1])
 		ax.set_title(labels[2])
 		plt.subplots_adjust(bottom=padding)
-		#plt.grid(True)
 		for bar in bars:
 			height = bar.get_height()
 			dataspace = min(10, height*0.01)
@@ -37,17 +33,18 @@ class Visualizer():
 					ha='center', va='bottom')
 		plt.show()
 
+	""" Create Horizontal Bar Chart Histogram
+	"""
 	def visualizeSideBar(self, data, datalabels, labels, padding=0.2, colour='#4868f0'):
-		pos = np.arange(len(data))+.5    # the bar centers on the y axis
+		ypos = np.arange(len(data))+.5
 		fig, ay = plt.subplots()
-		bars = ay.barh(pos,data, align='center', color=colour)
-		ay.set_yticks(pos)
+		bars = ay.barh(ypos,data, align='center', color=colour)
+		ay.set_yticks(ypos)
 		ay.set_yticklabels(datalabels,rotation=0, va='top')
 		plt.xlabel(labels[0])
 		plt.ylabel(labels[1])
 		ay.set_title(labels[2])
 		plt.subplots_adjust(left=padding)
-		#plt.grid(True)
 		for bar in bars:
 			width = bar.get_width()
 			dataspace = min(10, width*0.01)

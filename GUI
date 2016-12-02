@@ -17,9 +17,6 @@ from DTA import DTA
 
 class GUI():
 
-	def __init__(self):
-		self.createSystem()
-
 	def loadDocTracker(self):
 		if self.verifyFileName():
 			self.dta = DTA(self.filename)
@@ -29,7 +26,7 @@ class GUI():
 		root = Tk()
 		root.title("Document Tracking Analyser")
 
-		mainframe = ttk.Frame(root, padding="3 3 12 12")
+		mainframe = ttk.Frame(root, padding="5 5 20 20")
 		mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 		mainframe.columnconfigure(0, weight=1)
 		mainframe.rowconfigure(0, weight=1)
@@ -59,7 +56,7 @@ class GUI():
 		self.errorLabel = ttk.Label(mainframe, text="")
 		self.errorLabel.grid(column=1, row=8, columnspan=2, sticky=(W, E))
 
-		for child in mainframe.winfo_children(): child.grid_configure(padx=20, pady=10)
+		for child in mainframe.winfo_children(): child.grid_configure(padx=30, pady=10)
 
 		root.mainloop()
 
@@ -88,11 +85,11 @@ class GUI():
 	def tryTask(self, taskName, task, arg1=None, arg2=None):
 			try:
 				if arg1 is None:
-					task()
+					return task()
 				elif arg2 is None:
-					task(arg1)
+					return task(arg1)
 				else:
-					task(arg1, arg2)
+					return task(arg1, arg2)
 			except AssertionError as e:
 				self.errorLabel['text'] = "Task %s Failed: No Document UUID" % (taskName)
 			except Exception as e:
@@ -103,17 +100,17 @@ class GUI():
 	def tryTask5(self, taskName, task):
 		assert(self.verifyDocID())
 		if self.verifyUserID():
-			task(self._doc.get(), self._user.get())
+			returnValue = task(self._doc.get(), self._user.get())
 			self.errorLabel['text'] = "Task %s Completed" % (taskName)
-			return
-		task(self._doc.get())
+			return returnValue
+		return task(self._doc.get())
 		self.errorLabel['text'] = "Task %s Completed" % (taskName)
 
 	def task2a(self):
 		if self.taskFileMissingCheck("2a"):
 			return
 		if self.verifyDocID():
-			self.tryTask("2a", self.dta.task2a, self._doc.get())
+			print(self.tryTask("2a", self.dta.task2a, self._doc.get()))
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 
@@ -121,36 +118,37 @@ class GUI():
 		if self.taskFileMissingCheck("2b"):
 			return
 		if self.verifyDocID():
-			self.tryTask("2b", self.dta.task2b, self._doc.get())
+			print(self.tryTask("2b", self.dta.task2b, self._doc.get()))
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 
 	def task3a(self):
 		if self.taskFileMissingCheck("3a"):
 			return
-		self.tryTask("3a", self.dta.task3a)
+		print(self.tryTask("3a", self.dta.task3a))
 
 	def task3b(self):
 		if self.taskFileMissingCheck("3b"):
 			return
-		self.tryTask("3b", self.dta.task3b)
+		print(self.tryTask("3b", self.dta.task3b))
 
 	def task4(self):
 		if self.taskFileMissingCheck("4"):
 			return
-		self.tryTask("4", self.dta.task4)
+		print(self.tryTask("4", self.dta.task4))
 
 	def task5d(self):
 		if self.taskFileMissingCheck("5d"):
 			return
-		self.tryTask("5d",self.tryTask5, "5d", self.dta.task5d)
+		print(self.tryTask("5d",self.tryTask5, "5d", self.dta.task5d))
 
 	def task5e(self):
 		if self.taskFileMissingCheck("5e"):
 			return
-		self.tryTask("5e",self.tryTask5, "5e", self.dta.task5e)
+		print(self.tryTask("5e",self.tryTask5, "5e", self.dta.task5e))
 
 def __main__():
 	gui = GUI()
+	gui.createSystem()
 
 __main__()

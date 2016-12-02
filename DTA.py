@@ -37,7 +37,7 @@ class DTA():
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Countries","Views","Country","Top countries to view document"]
 		self.viz.visualizeBar(data, datalabels, labels)
-		return rawdata
+		return datalabels
 
 	def task2b(self, docID):
 		rawdata = self.da.docContinents(docID)
@@ -45,7 +45,7 @@ class DTA():
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Continents","Views","Continent","Top continents to view document"]
 		self.viz.visualizeBar(data, datalabels, labels)
-		return rawdata
+		return datalabels
 
 	def task3a(self):
 		rawdata = self.da.userAgentsString()
@@ -53,7 +53,7 @@ class DTA():
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Number of Users","User Agents","User Agents Document Views"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		return rawdata
+		return datalabels
 
 	def task3b(self):
 		rawdata = self.da.userAgentsStringBrowser()
@@ -61,7 +61,7 @@ class DTA():
 		datalabels = [x[0] for x in rawdata]
 		labels = ["Number of Users","User Agents","Browser Document Views"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		return rawdata
+		return datalabels
 
 	def task4(self):
 		rawdata = self.da.topTenReaders()
@@ -69,7 +69,7 @@ class DTA():
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Readers","Time Spent Reading","Top Readers Based on Reading Time"]
 		self.viz.visualizeBar(data, datalabels, labels, 0.2)
-		return rawdata
+		return datalabels
 
 	def task5d(self, docID, userID=None):
 		rawdata = self.da.alsoLiked(docID, self.s.readerProfileSort, userID)
@@ -77,7 +77,7 @@ class DTA():
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Time Spent Reading","Documents","Task 5d"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		return rawdata
+		return datalabels
 
 	def task5e(self, docID, userID=None):
 		rawdata = self.da.alsoLiked(docID, self.s.readerNumberSort, userID)
@@ -85,4 +85,4 @@ class DTA():
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Number of Readers","Documents","Task 5e"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		return rawdata
+		return datalabels
