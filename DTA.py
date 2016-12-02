@@ -5,77 +5,84 @@
 Document Tracker Analyser
 By Nicholas Robinson
 
-Run this script to run the DocumentTrackerAnalyser program.
+Main Class for Document Tracker Analyser System
 """
 
-import argparse
-import sys
-import time
+from Sorter import Sorter
+from IDDictionary import IDDictionary as Dic
+from DocAnalyser import DocAnalyser
+from Visualizer import Visualizer
 
-from DocTracker import DocTracker
+class DTA():
 
-def argumentHandler():
-	"""
-	TO DO
-	Argument Handling
-	"""
-	parser = argparse.ArgumentParser(prog='DocumentTrackerAnalyser', usage='%(prog)s [options]')
-	parser = argparse.ArgumentParser(description='Analyse Document Tracking Data')
-	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
-						default="data/sample_100k_lines.json")
-	parser.add_argument('-t', '--task', nargs='+', help='task(s) to execute',
-						choices=["2a","2b","3a","3b","4","5d","5e"], required=True)
-	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
-	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
-	args=parser.parse_args()
-	return args
+	def __init__(self, filename):
+		self.filename = filename
+		self.s = Sorter(filename)
+		self.loadData()
+		self.da = DocAnalyser(self.dd, self.ud, self.al)
+		self.viz = Visualizer()
 
-def runDocTracker(args):
-	print("Loading Data")
-	start = time.time()
-	dt = DocTracker(args.file)
-	end = time.time()
-	print("Time to load data: %f" % (end - start))
-	dt.loadAnalyser()
+	def loadData(self):
+		listSet = self.s.loadFile()
+		self.dd = listSet[0]
+		self.ud = listSet[1]
+		self.al = listSet[2]
 
-	print("Analysing Data")
-	if args.task is None:
-		return
-	for task in args.task:
-		try:
-			runTask(task, args, dt)
-		except AssertionError as e:
-			print("Error: %s is blank" % (e.args[0]))
+	def loadAnalyser(self):
+		self.da = DocAnalyser(self.dd, self.ud, self.al)
 
-def runTask(task, args, dt):
-	if task == "2a":
-		assert(args.doc_uuid is not None), "-d"
-		print(dt.task2a(args.doc_uuid))
-	elif task == "2b":
-		assert(args.doc_uuid is not None), "-d"
-		print(dt.task2b(args.doc_uuid))
-	elif task == "3a":
-		print(dt.task3a())
-	elif task == "3b":
-		print(dt.task3b())
-	elif task == "4":
-		print(dt.task4())
-	elif task == "5d":
-		assert(args.doc_uuid is not None), "-d"
-		if args.user_uuid is not None:
-			print(dt.task5d(args.doc_uuid, args.user_uuid))
-		else:
-			print(dt.task5d(args.doc_uuid))
-	elif task == "5e":
-		assert(args.doc_uuid is not None), "-d"
-		if args.user_uuid is not None:
-			print(dt.task5e(args.doc_uuid, args.user_uuid))
-		else:
-			print(dt.task5e(args.doc_uuid))
+	def task2a(self, docID):
+		rawdata = self.da.docCountries(docID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0] for x in rawdata]
+		labels = ["Countries","Views","Country","Top countries to view document"]
+		self.viz.visualizeBar(data, datalabels, labels)
+		return rawdata
 
-def __main__():
-	#testingFun()
-	args = argumentHandler()
-	runDocTracker(args)
+	def task2b(self, docID):
+		rawdata = self.da.docContinents(docID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0] for x in rawdata]
+		labels = ["Continents","Views","Continent","Top continents to view document"]
+		self.viz.visualizeBar(data, datalabels, labels)
+		return rawdata
 
-__main__()
+	def task3a(self):
+		rawdata = self.da.userAgentsString()
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0] for x in rawdata]
+		labels = ["Number of Users","User Agents","User Agents Document Views"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		return rawdata
+
+	def task3b(self):
+		rawdata = self.da.userAgentsStringBrowser()
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0] for x in rawdata]
+		labels = ["Number of Users","User Agents","Browser Document Views"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		return rawdata
+
+	def task4(self):
+		rawdata = self.da.topTenReaders()
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0].id for x in rawdata]
+		labels = ["Readers","Time Spent Reading","Top Readers Based on Reading Time"]
+		self.viz.visualizeBar(data, datalabels, labels, 0.2)
+		return rawdata
+
+	def task5d(self, docID, userID=None):
+		rawdata = self.da.alsoLiked(docID, self.s.readerProfileSort, userID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0].id for x in rawdata]
+		labels = ["Time Spent Reading","Documents","Task 5d"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		return rawdata
+
+	def task5e(self, docID, userID=None):
+		rawdata = self.da.alsoLiked(docID, self.s.readerNumberSort, userID)
+		data = [x[1] for x in rawdata]
+		datalabels = [x[0].id for x in rawdata]
+		labels = ["Number of Readers","Documents","Task 5e"]
+		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
+		return rawdata

@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+DTA Command Line
+By Nicholas Robinson
+
+Command Line interface for the Document Tracker Analyser system.
+"""
+
+import argparse
+import sys
+import time
+
+from DTA import DTA
+
+def argumentHandler():
+	"""
+	TO DO
+	Argument Handling
+	"""
+	parser = argparse.ArgumentParser(prog='DocumentTrackerAnalyser', usage='%(prog)s [options]')
+	parser = argparse.ArgumentParser(description='Analyse Document Tracking Data')
+	parser.add_argument('-f', '--file', nargs='?', help='document tracking data file',
+						default="data/sample_100k_lines.json")
+	parser.add_argument('-t', '--task', nargs='+', help='task(s) to execute',
+						choices=["2a","2b","3a","3b","4","5d","5e"], required=True)
+	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
+	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
+	args=parser.parse_args()
+	return args
+
+def runDocTracker(args):
+	print("Loading Data")
+	start = time.time()
+	dta = DTA(args.file)
+	end = time.time()
+	print("Time to load data: %f" % (end - start))
+	dta.loadAnalyser()
+
+	print("Analysing Data")
+	if args.task is None:
+		return
+	for task in args.task:
+		try:
+			runTask(task, args, dt)
+		except AssertionError as e:
+			print("Error: %s is blank" % (e.args[0]))
+
+def runTask(task, args, dt):
+	if task == "2a":
+		assert(args.doc_uuid is not None), "-d"
+		print(dta.task2a(args.doc_uuid))
+	elif task == "2b":
+		assert(args.doc_uuid is not None), "-d"
+		print(dta.task2b(args.doc_uuid))
+	elif task == "3a":
+		print(dta.task3a())
+	elif task == "3b":
+		print(dta.task3b())
+	elif task == "4":
+		print(dta.task4())
+	elif task == "5d":
+		assert(args.doc_uuid is not None), "-d"
+		if args.user_uuid is not None:
+			print(dta.task5d(args.doc_uuid, args.user_uuid))
+		else:
+			print(dta.task5d(args.doc_uuid))
+	elif task == "5e":
+		assert(args.doc_uuid is not None), "-d"
+		if args.user_uuid is not None:
+			print(dta.task5e(args.doc_uuid, args.user_uuid))
+		else:
+			print(dta.task5e(args.doc_uuid))
+
+def __main__():
+	#testingFun()
+	args = argumentHandler()
+	runDocTracker(args)
+
+__main__()

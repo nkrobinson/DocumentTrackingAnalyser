@@ -4,6 +4,8 @@
 """
 TKinter GUI
 By Nicholas Robinson
+
+Graphical User interface for the Document Tracker Analyser system.
 """
 
 from tkinter import *
@@ -11,7 +13,7 @@ from tkinter import ttk
 from tkinter import filedialog
 
 
-from DocTracker import DocTracker as DT
+from DTA import DTA
 
 class GUI():
 
@@ -20,8 +22,8 @@ class GUI():
 
 	def loadDocTracker(self):
 		if self.verifyFileName():
-			self.dt = DT(self.filename)
-			self.dt.loadAnalyser()
+			self.dta = DTA(self.filename)
+			self.dta.loadAnalyser()
 
 	def createSystem(self):
 		root = Tk()
@@ -111,7 +113,7 @@ class GUI():
 		if self.taskFileMissingCheck("2a"):
 			return
 		if self.verifyDocID():
-			self.tryTask("2a", self.dt.task2a, self._doc.get())
+			self.tryTask("2a", self.dta.task2a, self._doc.get())
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 
@@ -119,34 +121,34 @@ class GUI():
 		if self.taskFileMissingCheck("2b"):
 			return
 		if self.verifyDocID():
-			self.tryTask("2b", self.dt.task2b, self._doc.get())
+			self.tryTask("2b", self.dta.task2b, self._doc.get())
 			return
 		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 
 	def task3a(self):
 		if self.taskFileMissingCheck("3a"):
 			return
-		self.tryTask("3a", self.dt.task3a)
+		self.tryTask("3a", self.dta.task3a)
 
 	def task3b(self):
 		if self.taskFileMissingCheck("3b"):
 			return
-		self.tryTask("3b", self.dt.task3b)
+		self.tryTask("3b", self.dta.task3b)
 
 	def task4(self):
 		if self.taskFileMissingCheck("4"):
 			return
-		self.tryTask("4", self.dt.task4)
+		self.tryTask("4", self.dta.task4)
 
 	def task5d(self):
 		if self.taskFileMissingCheck("5d"):
 			return
-		self.tryTask("5d",self.tryTask5, "5d", self.dt.task5d)
+		self.tryTask("5d",self.tryTask5, "5d", self.dta.task5d)
 
 	def task5e(self):
 		if self.taskFileMissingCheck("5e"):
 			return
-		self.tryTask("5e",self.tryTask5, "5e", self.dt.task5e)
+		self.tryTask("5e",self.tryTask5, "5e", self.dta.task5e)
 
 def __main__():
 	gui = GUI()
