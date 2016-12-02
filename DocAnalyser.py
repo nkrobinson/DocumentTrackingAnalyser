@@ -8,7 +8,6 @@ By Nicholas Robinson
 
 from user_agents import parse
 from collections import Counter
-import re
 
 from DataTypes import Document as Doc
 from DataTypes import User as User
@@ -86,7 +85,7 @@ class DocAnalyser():
 			raise BadIDException("ID %s does not exist"%(docID),str(docID))
 			return None
 		doc = self.dd.get(docID)
-		return doc.usersRead
+		return doc.getReaders()
 
 	"""
 	Task 5b
@@ -392,4 +391,3 @@ class BadIDException(Exception):
 	def __init__(self, message, error):
 		self.message = message
 		self.error = error
-		#print("%s ID does not exist" % (error))

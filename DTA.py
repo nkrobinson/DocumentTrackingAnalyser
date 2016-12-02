@@ -27,7 +27,6 @@ def argumentHandler():
 						choices=["2a","2b","3a","3b","4","5d","5e"], required=True)
 	parser.add_argument('-u', '--user_uuid', nargs='?', help='user id')
 	parser.add_argument('-d', '--doc_uuid', nargs='?', help='document id')
-	parser.print_help()
 	args=parser.parse_args()
 	return args
 

@@ -87,4 +87,4 @@ class Sorter(object):
 		for doc in dicDocs:
 			returnlist.append((doc, dicDocs[doc]))
 		returnlist.sort(key=lambda tup: tup[1], reverse=True)
-		return returnlist
+		return returnlist[:10]

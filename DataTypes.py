@@ -2,7 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-List Object
+Data Types
+By Nicholas Robinson
+
+This file holds classes of each data type that can be held in the ID Dictionary Class.
+"""
+
+"""
+ID Object
 By Nicholas Robinson
 """
 
@@ -55,6 +62,9 @@ class Document(IDObject):
 
 	def countryRead(self, country):
 		self.countriesRead.append(country)
+
+	def getReaders(self):
+		return self.usersRead
 
 	def getCountries(self):
 		return self.countriesRead
