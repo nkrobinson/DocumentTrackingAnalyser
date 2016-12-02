@@ -6,8 +6,6 @@ TKinter GUI
 By Nicholas Robinson
 """
 
-# Example from: http://www.tkdocs.com/tutorial/firstexample.html
-
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -56,14 +54,18 @@ class GUI():
 		ttk.Button(mainframe, text="Task 5d", command=self.task5d).grid(column=1, row=7, sticky=(W, E))
 		ttk.Button(mainframe, text="Task 5e", command=self.task5e).grid(column=2, row=7, sticky=(W, E))
 
+		self.errorLabel = ttk.Label(mainframe, text="")
+		self.errorLabel.grid(column=1, row=8, columnspan=2, sticky=(W, E))
+
 		for child in mainframe.winfo_children(): child.grid_configure(padx=20, pady=10)
 
 		root.mainloop()
 
 	def openFile(self):
+		self.errorLabel['text'] = "Opening File"
 		self.filename = filedialog.askopenfile(filetypes=(('JSON files', '*.json'), ('All Files', '*.*'))).name
-		print(self.filename)
 		self.loadDocTracker()
+		self.errorLabel['text'] = "Opened File"
 
 	def verifyFileName(self):
 		return self.filename != ""
@@ -76,42 +78,86 @@ class GUI():
 
 
 	def task2a(self):
+		self.errorLabel['text'] = "Running Task 2a"
 		if self.verifyDocID():
-			return self.dt.task2a(self._doc.get())
+			try:
+				self.dt.task2a(self._doc.get())
+			except Exception as e:
+				self.errorLabel['text'] = "Task 2a Failed: %s" % (e.message)
+			self.errorLabel['text'] = "Task 2a Completed"
+			return
+		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 		return
 
 	def task2b(self):
+		self.errorLabel['text'] = "Running Task 2b"
 		if self.verifyDocID():
-			return self.dt.task2b(self._doc.get())
+			try:
+				self.dt.task2b(self._doc.get())
+			except Exception as e:
+				self.errorLabel['text'] = "Task 2b Failed: %s" % (e.message)
+			self.errorLabel['text'] = "Task 2b Completed"
+			return
+		self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
 		return
 
 	def task3a(self):
-		return self.dt.task3a()
+		self.errorLabel['text'] = "Running Task 3a"
+		try:
+			self.dt.task3a()
+		except Exception as e:
+			self.errorLabel['text'] = "Task 3a Failed: %s" % (e.message)
+		self.errorLabel['text'] = "Task 3a Completed"
+		return
 
 	def task3b(self):
-		return self.dt.task3b()
+		self.errorLabel['text'] = "Running Task 3b"
+		try:
+			self.dt.task3b()
+		except Exception as e:
+			self.errorLabel['text'] = "Task 3b Failed: %s" % (e.message)
+		self.errorLabel['text'] = "Task 3b Completed"
+		return
 
 	def task4(self):
-		return self.dt.task4()
+		self.errorLabel['text'] = "Running Task 4"
+		try:
+			self.dt.task4()
+		except Exception as e:
+			self.errorLabel['text'] = "Task 4 Failed: %s" % (e.message)
+		self.errorLabel['text'] = "Task 4 Completed"
+		return
 
 	def task5d(self):
-		if self.verifyDocID():
-			if self.verifyUserID():
-				print("5d with User & Doc")
-				return self.dt.task5d(self._doc.get(), self._user.get())
-			print("5e with Doc")
-			print(self.dt.task5d(self._doc.get()))
-			return
+		self.errorLabel['text'] = "Running Task 5d"
+		try:
+			if self.verifyDocID():
+				if self.verifyUserID():
+					self.dt.task5d(self._doc.get(), self._user.get())
+					self.errorLabel['text'] = "Task 5d Completed"
+					return
+				self.dt.task5d(self._doc.get())
+				self.errorLabel['text'] = "Task 5d Completed"
+				return
+			self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
+		except Exception as e:
+			self.errorLabel['text'] = "Task 5d Failed: %s" % (e.message)
 		return
 
 	def task5e(self):
-		if self.verifyDocID():
-			if self.verifyUserID():
-				print("5e with User & Doc")
-				return self.dt.task5e(self._doc.get(), self._user.get())
-			print("5e with Doc")
-			print(self.dt.task5e(self._doc.get()))
-			return
+		self.errorLabel['text'] = "Running Task 5e"
+		try:
+			if self.verifyDocID():
+				if self.verifyUserID():
+					self.dt.task5e(self._doc.get(), self._user.get())
+					self.errorLabel['text'] = "Task 5e Completed"
+					return
+				self.dt.task5e(self._doc.get())
+				self.errorLabel['text'] = "Task 5e Completed"
+				return
+			self.errorLabel['text'] = "Task 2a Failed: No Document UUID"
+		except Exception as e:
+			self.errorLabel['text'] = "Task 5e Failed: %s" % (e.message)
 		return
 
 def __main__():

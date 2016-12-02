@@ -75,7 +75,6 @@ class DocTracker():
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Time Spent Reading","Documents","Task 5d"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		#return [(x[0].id,x[1]) for x in rawdata]
 		return rawdata
 
 	def task5e(self, docID, userID=None):
@@ -84,5 +83,4 @@ class DocTracker():
 		datalabels = [x[0].id for x in rawdata]
 		labels = ["Number of Readers","Documents","Task 5e"]
 		self.viz.visualizeSideBar(data, datalabels, labels, 0.3)
-		#return [(x[0].id,x[1]) for x in rawdata]
 		return rawdata

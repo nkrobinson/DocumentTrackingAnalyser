@@ -72,10 +72,9 @@ class DocAnalyser():
 		topten = []
 		userList = self.ud.getList()
 		for user in userList:
-			if len(topten) < 10 or user.docTotalTime > topten[0][1]:
-				topten.append((user,user.docTotalTime))
-			topten.sort(key=lambda tup: tup[1], reverse=True)
-		return topten
+			topten.append((user,user.docTotalTime))
+		topten.sort(key=lambda tup: tup[1], reverse=True)
+		return topten[:10]
 
 	"""
 	Task 5a
